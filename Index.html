@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lễ Thành Hôn - Chú Rể & Cô Dâu</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            background: #fff5f5;
+            color: #4a4a4a;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            padding: 100px 20px;
+            background: #fff;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #d63384;
+        }
+
+        .info-section {
+            padding: 50px 20px;
+            background: #ffe3e3;
+        }
+
+        .wish-section {
+            padding: 50px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #d63384;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #wish-list {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .wish-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 5px solid #d63384;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Thế Anh & Mai Phương</h1>
+        <p>12 . 12 . 2026</p>
+        <p>Trân trọng kính mời bạn đến dự lễ thành hôn của chúng mình!</p>
+    </div>
+
+    <div class="info-section">
+        <h2>Thời Gian & Địa Điểm</h2>
+        <p>📍 Nhà hàng Tiệc cưới ABC, Quận 1, TP. HCM</p>
+        <p>⏰ 18:00 - Thứ Bảy, Ngày 12/12/2026</p>
+    </div>
+
+    <div class="wish-section">
+        <h2>Gửi Lời Chúc Mừng</h2>
+        <input type="text" id="guestName" placeholder="Tên của bạn">
+        <textarea id="guestMessage" rows="4" placeholder="Lời chúc của bạn..."></textarea>
+        <button onclick="sendWish()">Gửi Lời Chúc</button>
+
+        <div id="wish-list">
+            <h3>Lời chúc từ mọi người:</h3>
+            <div id="loading">Đang tải lời chúc...</div>
+        </div>
+    </div>
+
+    <script>
+        // CẤU HÌNH SUPABASE (Thay bằng thông tin của bạn)
+        // CẤU HÌNH SUPABASE CỦA BẠN
+        const SB_URL = "https://wkdniqwwjvuifkubbrgu.supabase.co";
+        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndrZG5pcXd3anZ1aWZrdWJicmd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzE0MTIsImV4cCI6MjA4NzY0NzQxMn0.6hIZa3gRL2uVjBGvrFY50iK1Wl0rbyGZm6CXOClpg2E";
+
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        // Hàm lấy danh sách lời chúc
+        async function fetchWishes() {
+            const { data, error } = await _supabase
+                .from('wedding_wishes')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            const wishList = document.getElementById('wish-list');
+            document.getElementById('loading').style.display = 'none';
+
+            if (data) {
+                const html = data.map(w => `
+                    <div class="wish-item">
+                        <strong>${w.guest_name}</strong>: ${w.message}
+                    </div>
+                `).join('');
+                wishList.innerHTML = '<h3>Lời chúc từ mọi người:</h3>' + html;
+            }
+        }
+
+        // Hàm gửi lời chúc
+        async function sendWish() {
+            const name = document.getElementById('guestName').value;
+            const msg = document.getElementById('guestMessage').value;
+
+            if (!name || !msg) return alert("Vui lòng nhập đủ tên và lời chúc nha!");
+
+            const { error } = await _supabase
+                .from('wedding_wishes')
+                .insert([{ guest_name: name, message: msg }]);
+
+            if (error) alert("Có lỗi xảy ra!");
+            else {
+                alert("Cảm ơn lời chúc của bạn!");
+                document.getElementById('guestMessage').value = "";
+                fetchWishes(); // Load lại danh sách
+            }
+        }
+
+        fetchWishes();
+    </script>
+</body>
+
+</html>
