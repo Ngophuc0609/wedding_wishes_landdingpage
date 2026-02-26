@@ -30,30 +30,30 @@
 
     <div class="wish-section">
         <h2> Gửi Lời Chúc & Ảnh</h2>
-        
+
         <div class="form-group">
             <input type="text" id="guestName" placeholder="Tên của bạn">
         </div>
-        
+
         <div class="form-group">
             <textarea id="guestMessage" placeholder="Lời chúc của bạn..."></textarea>
         </div>
-        
+
         <div class="form-group">
             <label for="guestImage"> Gửi ảnh kỷ niệm (tùy chọn)</label>
             <input type="file" id="guestImage" accept="image/*" onchange="previewImage(this)">
             <div id="imagePreview"></div>
         </div>
-        
+
         <button onclick="sendWish()">Gửi Lời Chúc</button>
 
         <div id="wish-list">
             <h3> Lời chúc từ mọi người:</h3>
             <div id="loading">Đang tải lời chúc...</div>
         </div>
-        
+
         <hr>
-        
+
         <div id="share"></div>
         <div id="chart"></div>
     </div>
@@ -62,7 +62,7 @@
     <script src="assets/js/features.js"></script>
     <script>
         // Khởi tạo tất cả tính năng
-        renderCountdown(new Date(''2026-12-12T18:00:00''));
+        renderCountdown(new Date('2026-12-12T18:00:00'));
         renderQRCode(window.location.href);
         renderMap();
         renderShareButtons(window.location.href);
